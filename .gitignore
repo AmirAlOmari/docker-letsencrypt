@@ -1,0 +1,8 @@
+# Data
+/data*
+
+# Temp
+tmp
+
+# Node modules
+node_modules

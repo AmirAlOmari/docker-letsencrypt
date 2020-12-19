@@ -1,0 +1,22 @@
+version: '3'
+services:
+  nginx:
+    build:
+      context: ./
+      dockerfile: ./docker/nginx-reverse.letsencrypt/Dockerfile
+    environment:
+      DOMAIN: ${DOMAIN}
+    ports:
+      - "80:80"
+      - "443:443"
+    command: './compile-nginx.sh && /bin/sh -c ''while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g "daemon off;"'''
+    volumes:
+    #   - ./nginx/default.letsencrypt.conf:/etc/nginx/conf.d/default.conf
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
+  certbot:
+    image: certbot/certbot
+    volumes:
+      - ./data/letsencrypt/logs:/var/log/letsencrypt 
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
